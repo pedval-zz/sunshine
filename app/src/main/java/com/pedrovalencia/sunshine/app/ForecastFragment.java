@@ -1,9 +1,11 @@
 package com.pedrovalencia.sunshine.app;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -28,7 +30,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 
 /**
@@ -53,21 +54,8 @@ public class ForecastFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-        String[] forecastArray = {
-                "Today - Sunny - 25 / 20",
-                "Tomorrow - Cloudy - 21 / 19",
-                "Weds - Foggy - 15 / 11",
-                "Thurs - Rain - 16 / 9",
-                "Fri - Sunny - 23 / 22",
-                "Sat - Cloudy - 20 / 15",
-                "Sun - Cloudy - 19 / 15"
-        };
-
-
-        ArrayList<String> weekForecast = new ArrayList<String>(Arrays.asList(forecastArray));
-
         adapterList = new ArrayAdapter<String>(getActivity(),
-                R.layout.list_item_forecast, R.id.list_item_forecast_textview, weekForecast);
+                R.layout.list_item_forecast, R.id.list_item_forecast_textview, new ArrayList<String>());
 
         ListView forecastListView = (ListView)rootView.findViewById(R.id.list_item_forecast_textview);
         forecastListView.setAdapter(adapterList);
@@ -99,14 +87,29 @@ public class ForecastFragment extends Fragment {
         int id = item.getItemId();
 
         if(id == R.id.action_refresh) {
-            FetchWeatherTask weatherTask = new FetchWeatherTask();
-            weatherTask.execute("94043");
+            updateWeather();
             return true;
         }
         return super.onOptionsItemSelected(item);
 
     }
 
+    private void updateWeather() {
+        FetchWeatherTask weatherTask = new FetchWeatherTask();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String location = prefs.getString(getString(R.string.pref_location_key),
+                getString(R.string.pref_location_default));
+
+        String unit_measure = prefs.getString(getString(R.string.pref_unit_measure_key),
+                getString(R.string.pref_unit_measure_default));
+        weatherTask.execute(location, unit_measure);
+    }
+
+    @Override
+    public void onStart(){
+        super.onStart();
+        updateWeather();
+    }
 
 
     public class FetchWeatherTask extends AsyncTask <String, Void, String[]>{
@@ -131,7 +134,7 @@ public class ForecastFragment extends Fragment {
                 Uri uriBuilder = Uri.parse("http://api.openweathermap.org/data/2.5/forecast/daily?").buildUpon()
                 .appendQueryParameter("q", params[0])
                 .appendQueryParameter("mode", "json")
-                .appendQueryParameter("unit", "metric")
+                .appendQueryParameter("unit", params[1])
                 .appendQueryParameter("cnt", "7").build();
 
 
@@ -208,7 +211,18 @@ public class ForecastFragment extends Fragment {
          * Prepare the weather high/lows for presentation.
          */
         private String formatHighLows(double high, double low) {
-            // For presentation, assume the user doesn't care about tenths of a degree.
+
+            SharedPreferences sharedPr = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            String unitType = sharedPr.getString(getString(R.string.pref_unit_measure_key),
+                    getString(R.string.pref_unit_measure_default));
+
+            if(unitType.equals(R.string.pref_unit_imperial)) {
+                high = (high * 1.8) + 32;
+                low = (low * 1.8) + 32;
+            } else if(!unitType.equals(getString(R.string.pref_unit_metric))) {
+                Log.e(LOG_TAG, "Unit type not found "+ unitType);
+            }
+
             long roundedHigh = Math.round(high);
             long roundedLow = Math.round(low);
 
