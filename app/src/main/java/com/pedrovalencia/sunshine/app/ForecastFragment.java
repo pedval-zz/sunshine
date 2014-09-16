@@ -216,7 +216,7 @@ public class ForecastFragment extends Fragment {
             String unitType = sharedPr.getString(getString(R.string.pref_unit_measure_key),
                     getString(R.string.pref_unit_measure_default));
 
-            if(unitType.equals(R.string.pref_unit_imperial)) {
+            if(unitType.equals(getString(R.string.pref_unit_imperial))) {
                 high = (high * 1.8) + 32;
                 low = (low * 1.8) + 32;
             } else if(!unitType.equals(getString(R.string.pref_unit_metric))) {
