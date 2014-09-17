@@ -31,6 +31,7 @@ import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by pedrovalencia on 12/09/2014.
@@ -54,7 +55,7 @@ public class ForecastFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-        adapterList = new ArrayAdapter<String>(getActivity(),
+            adapterList = new ArrayAdapter<String>(getActivity(),
                 R.layout.list_item_forecast, R.id.list_item_forecast_textview, new ArrayList<String>());
 
         ListView forecastListView = (ListView)rootView.findViewById(R.id.list_item_forecast_textview);
@@ -203,7 +204,7 @@ public class ForecastFragment extends Fragment {
             // Because the API returns a unix timestamp (measured in seconds),
             // it must be converted to milliseconds in order to be converted to valid date.
             Date date = new Date(time * 1000);
-            SimpleDateFormat format = new SimpleDateFormat("E, MMM d");
+            SimpleDateFormat format = new SimpleDateFormat("E, MMM d", Locale.ENGLISH);
             return format.format(date).toString();
         }
 
