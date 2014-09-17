@@ -5,7 +5,10 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="action_refresh" translatable="false">Refresh</string>
+    <string name="action_map" translatable="false">Map</string>
     <string name="title_activity_detail">DetailActivity</string>
+    <string name="action_share">Share</string>
+
 
     <!-- Pref location -->
     <string name="pref_location_label">Location</string>
