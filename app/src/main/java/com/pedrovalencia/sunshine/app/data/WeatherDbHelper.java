@@ -10,11 +10,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class WeatherDbHelper extends SQLiteOpenHelper{
 
     public static final String DATABASE_NAME = "weather.db";
-
     public static final int DATABASE_VERSION = 1;
 
-
-    public WeatherDbHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
+    public WeatherDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
@@ -31,7 +29,7 @@ public class WeatherDbHelper extends SQLiteOpenHelper{
                 // forecasting, it's reasonable to assume the user will want information
                 // for a certain date and all dates *following*, so the forecast data
                 // should be sorted accordingly.
-                WeatherContract.WeatherEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                WeatherContract.WeatherEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
 
                 // the ID of the location entry associated with this weather data
                 WeatherContract.WeatherEntry.COLUMN_LOC_KEY + " INTEGER NOT NULL, " +
@@ -55,10 +53,31 @@ public class WeatherDbHelper extends SQLiteOpenHelper{
                 // per location, it's created a UNIQUE constraint with REPLACE strategy
                 " UNIQUE (" + WeatherContract.WeatherEntry.COLUMN_DATETEXT + ", " +
                 WeatherContract.WeatherEntry.COLUMN_LOC_KEY + ") ON CONFLICT REPLACE);";
+
+
+        final String SQL_CREATE_LOCATION_TABLE = "CREATE TABLE " + WeatherContract.LocationEntry.TABLE_NAME + " ("+
+                WeatherContract.LocationEntry._ID + " INTEGER PRIMARY KEY," +
+                WeatherContract.LocationEntry.COLUMN_LOCATION_SETTING + " TEXT UNIQUE NOT NULL, "+
+                WeatherContract.LocationEntry.COLUMN_CITY_NAME + " TEXT NOT NULL, "+
+                WeatherContract.LocationEntry.COLUMN_COORD_LAT + " REAL NOT NULL, "+
+                WeatherContract.LocationEntry.COLUMN_COORD_LONG + " REAL NOT NULL, "+
+                "UNIQUE ("+WeatherContract.LocationEntry.COLUMN_LOCATION_SETTING + ") ON CONFLICT IGNORE);";
+
+        db.execSQL(SQL_CREATE_LOCATION_TABLE);
+        db.execSQL(SQL_CREATE_WEATHER_TABLE);
+
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
+        // This database is only a cache for online data, so its upgrade policy is
+        // to simply to discard the data and start over
+        // Note that this only fires if you change the version number for your database.
+        // It does NOT depend on the version number for your application.
+        // If you want to update the schema without wiping data, commenting out the next 2 lines
+        // should be your top priority before modifying this method.
+        db.execSQL("DROP TABLE IF EXISTS " + WeatherContract.LocationEntry.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + WeatherContract.WeatherEntry.TABLE_NAME);
+        onCreate(db);
     }
 }
