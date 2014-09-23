@@ -280,4 +280,50 @@ public class WeatherProvider  extends ContentProvider{
         return matcher;
 
     }
+
+    @Override
+    public int bulkInsert(Uri uri, ContentValues[] values) {
+        final SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        final int match = sUriMatcher.match(uri);
+
+        int returnCount = 0;
+        switch (match) {
+            case WEATHER: {
+                db.beginTransaction();
+                try{
+                    for(ContentValues value: values) {
+                        long _id = db.insert(WeatherContract.WeatherEntry.TABLE_NAME, null, value);
+                        if(-1 != _id) {
+                            returnCount++;
+                        }
+                    }
+                    db.setTransactionSuccessful();
+                } finally {
+                    db.endTransaction();
+                }
+                getContext().getContentResolver().notifyChange(uri, null);
+                break;
+            }
+            case LOCATION: {
+                db.beginTransaction();
+                try{
+                   for(ContentValues value: values) {
+                       long _id = db.insert(WeatherContract.LocationEntry.TABLE_NAME, null, value);
+                       if(-1 != _id) {
+                           returnCount++;
+                       }
+                   }
+                   db.setTransactionSuccessful();
+                } finally{
+                    db.endTransaction();
+                }
+                getContext().getContentResolver().notifyChange(uri, null);
+                break;
+            }
+            default:
+                return super.bulkInsert(uri, values);
+        }
+        return returnCount;
+
+    }
 }
