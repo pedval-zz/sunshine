@@ -1,6 +1,7 @@
 package com.pedrovalencia.sunshine.app;
 
 
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -9,10 +10,8 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.util.Log;
-import android.widget.ArrayAdapter;
 
 import com.pedrovalencia.sunshine.app.data.WeatherContract;
-import com.pedrovalencia.sunshine.app.data.WeatherProvider;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,12 +34,10 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
 
     private final String LOG_TAG = FetchWeatherTask.class.getSimpleName();
 
-    private ArrayAdapter<String> mForecastAdapter;
     private final Context mContext;
 
-    public FetchWeatherTask(Context context, ArrayAdapter<String> forecastAdapter) {
+    public FetchWeatherTask(Context context) {
         mContext = context;
-        mForecastAdapter = forecastAdapter;
     }
 
     /* The date/time conversion code is going to be moved outside the asynctask later,
@@ -128,8 +125,6 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
         JSONObject coordJSON = cityJson.getJSONObject(OWM_COORD);
         double cityLatitude = coordJSON.getLong(OWM_COORD_LAT);
         double cityLongitude = coordJSON.getLong(OWM_COORD_LONG);
-
-        long locationId = addLocation(locationSetting, cityName, cityLatitude, cityLongitude);
 
         Log.v(LOG_TAG, cityName + ", with coord: " + cityLatitude + " " + cityLongitude);
 
@@ -233,7 +228,7 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
 
         String format = "json";
         String units = "metric";
-        int numDays = 7;
+        int numDays = 14;
 
         try {
             // Construct the URL for the OpenWeatherMap query
@@ -311,42 +306,37 @@ public class FetchWeatherTask extends AsyncTask<String, Void, String[]> {
         return null;
     }
 
-    @Override
-    protected void onPostExecute(String[] result) {
-        if (result != null) {
-            mForecastAdapter.clear();
-            for(String dayForecastStr : result) {
-                mForecastAdapter.add(dayForecastStr);
-            }
-            // New data is back from the server.  Hooray!
-        }
-    }
 
     private long addLocation(String locationSetting, String cityName,
-                             double cityLatitude, double cityLongitude) {
+                             double lat, double lon) {
 
-        long returnCount = 0;
-        WeatherProvider weatherProvider = new WeatherProvider();
+        Log.v(LOG_TAG, "inserting " + cityName + ", with coord: " + lat + ", " + lon);
 
-        Cursor cursor = weatherProvider.query(WeatherContract.LocationEntry.CONTENT_URI,
+        // First, check if the location with this city name exists in the db
+        Cursor cursor = mContext.getContentResolver().query(
+                WeatherContract.LocationEntry.CONTENT_URI,
                 new String[]{WeatherContract.LocationEntry._ID},
-                WeatherContract.LocationEntry.COLUMN_LOCATION_SETTING + " = " + locationSetting,
+                WeatherContract.LocationEntry.COLUMN_LOCATION_SETTING + " = ?",
                 new String[]{locationSetting},
                 null);
-        if(cursor.moveToFirst()) {
+
+        if (cursor.moveToFirst()) {
+            Log.v(LOG_TAG, "Found it in the database!");
             int locationIdIndex = cursor.getColumnIndex(WeatherContract.LocationEntry._ID);
             return cursor.getLong(locationIdIndex);
         } else {
-            ContentValues values = new ContentValues();
-            values.put(WeatherContract.LocationEntry.COLUMN_LOCATION_SETTING, locationSetting);
-            values.put(WeatherContract.LocationEntry.COLUMN_CITY_NAME, cityName);
-            values.put(WeatherContract.LocationEntry.COLUMN_COORD_LONG, cityLongitude);
-            values.put(WeatherContract.LocationEntry.COLUMN_COORD_LAT, cityLatitude);
-            ContentValues[] contentValueList = {values};
+            Log.v(LOG_TAG, "Didn't find it in the database, inserting now!");
+            ContentValues locationValues = new ContentValues();
+            locationValues.put(WeatherContract.LocationEntry.COLUMN_LOCATION_SETTING, locationSetting);
+            locationValues.put(WeatherContract.LocationEntry.COLUMN_CITY_NAME, cityName);
+            locationValues.put(WeatherContract.LocationEntry.COLUMN_COORD_LAT, lat);
+            locationValues.put(WeatherContract.LocationEntry.COLUMN_COORD_LONG, lon);
 
-            returnCount = weatherProvider.bulkInsert(WeatherContract.LocationEntry.CONTENT_URI, contentValueList);
+            Uri locationInsertUri = mContext.getContentResolver()
+                    .insert(WeatherContract.LocationEntry.CONTENT_URI, locationValues);
+
+            return ContentUris.parseId(locationInsertUri);
         }
-        return returnCount;
     }
 
 }
