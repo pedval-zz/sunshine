@@ -174,10 +174,20 @@ public class DetailActivity extends ActionBarActivity {
                     data.getString(data.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_SHORT_DESC));
 
             boolean isMetric = Utility.isMetric(getActivity());
-            String high = Utility.formatTemperature(
+            String high = Utility.formatTemperature(this.getActivity().getApplicationContext(),
                     data.getDouble(data.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_MAX_TEMP)), isMetric);
-            String low = Utility.formatTemperature(
+            String low = Utility.formatTemperature(this.getActivity().getApplicationContext(),
                     data.getDouble(data.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_MIN_TEMP)), isMetric);
+
+            String humidity = this.getActivity().getApplicationContext().
+                    getString(R.string.format_humidity,
+                            data.getDouble(data.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_HUMIDITY)));
+
+            String wind = this.getActivity().getApplicationContext().
+                    getString(R.string.format_wind_speed,
+                            data.getDouble(data.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_WIND_SPEED)));
+            String pressure = this.getActivity().getApplicationContext().
+                    getString(R.string.format_pressure, data.getDouble(data.getColumnIndex(WeatherContract.WeatherEntry.COLUMN_PRESSURE)));
 
             mForecastStr = String.format("%s - %s - %s/%s",
                     dateString, weatherDescription, high, low);

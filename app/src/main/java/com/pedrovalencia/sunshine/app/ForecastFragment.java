@@ -9,7 +9,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,7 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.pedrovalencia.sunshine.app.data.WeatherContract;
 
@@ -58,7 +56,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     public static final int COL_WEATHER_MIN_TEMP = 4;
     public static final int COL_LOCATION_SETTING = 5;
 
-    private SimpleCursorAdapter mForecastAdapter;
+    private ForecastAdapter mForecastAdapter;
 
     public ForecastFragment() {
     }
@@ -80,93 +78,27 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        // The ArrayAdapter will take data from a source and
+        // use it to populate the ListView it's attached to.
+        mForecastAdapter = new ForecastAdapter(getActivity(), null, 0);
+
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-        mForecastAdapter = new SimpleCursorAdapter(
-                getActivity(),
-                R.layout.list_item_forecast,
-                null,
-                // the column names to use to fill the textviews
-                new String[]{WeatherContract.WeatherEntry.COLUMN_DATETEXT,
-                        WeatherContract.WeatherEntry.COLUMN_SHORT_DESC,
-                        WeatherContract.WeatherEntry.COLUMN_MAX_TEMP,
-                        WeatherContract.WeatherEntry.COLUMN_MIN_TEMP
-                },
-                // the textviews to fill with the data pulled from the columns above
-                new int[]{R.id.list_item_date_textview,
-                        R.id.list_item_forecast_textview,
-                        R.id.list_item_high_textview,
-                        R.id.list_item_low_textview
-                },
-                0
-        );
+        // Get a reference to the ListView, and attach this adapter to it.
+        ListView listView = (ListView) rootView.findViewById(R.id.list_item_forecast_textview);
+        listView.setAdapter(mForecastAdapter);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
-        mForecastAdapter.setViewBinder(new SimpleCursorAdapter.ViewBinder() {
             @Override
-            public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
-                boolean isMetric = Utility.isMetric(getActivity());
-                switch (columnIndex) {
-                    case COL_WEATHER_MAX_TEMP:
-                    case COL_WEATHER_MIN_TEMP: {
-                        // we have to do some formatting and possibly a conversion
-                        ((TextView) view).setText(Utility.formatTemperature(
-                                cursor.getDouble(columnIndex), isMetric));
-                        return true;
-                    }
-                    case COL_WEATHER_DATE: {
-                        String dateString = cursor.getString(columnIndex);
-                        TextView dateView = (TextView) view;
-                        dateView.setText(Utility.formatDate(dateString));
-                        return true;
-                    }
-                }
-                return false;
-            }
-        });
-
-        ListView forecastListView = (ListView)rootView.findViewById(R.id.list_item_forecast_textview);
-        forecastListView.setAdapter(mForecastAdapter);
-
-
-        forecastListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                SimpleCursorAdapter adapter = (SimpleCursorAdapter)parent.getAdapter();
-                Cursor cursor = adapter.getCursor();
-                StringBuilder forecast = new StringBuilder();
-                boolean isMetric = Utility.isMetric(getActivity());
-                if(null != cursor && cursor.moveToPosition(position)) {
-                    /*
-                    forecast.append(Utility.formatDate(cursor.getString(COL_WEATHER_DATE)));
-                    forecast.append(" - ");
-                    forecast.append(cursor.getString(COL_WEATHER_DESC));
-                    forecast.append(" - ");
-                    forecast.append(Utility.formatTemperature(cursor.getDouble(COL_WEATHER_MAX_TEMP), isMetric));
-                    forecast.append("/");
-                    forecast.append(Utility.formatTemperature(cursor.getDouble(COL_WEATHER_MIN_TEMP), isMetric));
-
-                    Better format solution
-                    String dateString = Utility.formatDate(cursor.getString(COL_WEATHER_DATE));
-                    String weatherDescription = cursor.getString(COL_WEATHER_DESC);
-
-                    boolean isMetric = Utility.isMetric(getActivity());
-                    String high = Utility.formatTemperature(
-                            cursor.getDouble(COL_WEATHER_MAX_TEMP), isMetric);
-                    String low = Utility.formatTemperature(
-                            cursor.getDouble(COL_WEATHER_MIN_TEMP), isMetric);
-
-                    String detailString = String.format("%s - %s - %s/%s",
-                            dateString, weatherDescription, high, low);
-                    */
-                    Intent intent = new Intent(getActivity(), DetailActivity.class);
-                    intent.putExtra(DetailActivity.DATE_KEY, cursor.getString(COL_WEATHER_DATE));
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                Cursor cursor = mForecastAdapter.getCursor();
+                if (cursor != null && cursor.moveToPosition(position)) {
+                    Intent intent = new Intent(getActivity(), DetailActivity.class)
+                            .putExtra(DetailActivity.DATE_KEY, cursor.getString(COL_WEATHER_DATE));
                     startActivity(intent);
                 }
-
-
             }
         });
-
 
         return rootView;
     }

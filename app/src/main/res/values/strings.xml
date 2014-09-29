@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:xliff="http://schemas.android.com/apk/res-auto">
 
     <string name="app_name">Sunshine</string>
     <string name="hello_world">Hello world!</string>
@@ -21,5 +21,21 @@
     <string name="pref_unit_measure_default" translatable="false">metric</string>
     <string name="pref_unit_imperial" translatable="false">imperial</string>
     <string name="pref_unit_metric" translatable="false">metric</string>
+
+    <!-- Date label when displaying today's weather forecast [CHAR LIMIT=20] -->
+    <string name="today">Today</string>
+
+    <!-- Date label when displaying tomorrow's weather forecast [CHAR LIMIT=20] -->
+    <string name="tomorrow">Tomorrow</string>
+
+    <!-- Date format for displaying day of week and date (i.e. Mon Jun 1) [CHAR LIMIT=20] -->
+    <string name="format_full_friendly_date">
+        <xliff:g id="day_of_week">%1$s</xliff:g>, <xliff:g id="date">%2$s</xliff:g>
+    </string>
+
+    <string name="format_temperature"><xliff:g id="temp">%1.0f</xliff:g>\u00B0</string>
+    <string name="format_humidity"><xliff:g id="humidity">%1.0f</xliff:g>%</string>
+    <string name="format_wind_speed"><xliff:g id="wind">%1.0f</xliff:g>Km/h</string>
+    <string name="format_pressure"><xliff:g id="pressure">%1.0f</xliff:g>hPa</string>
 
 </resources>
