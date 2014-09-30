@@ -24,13 +24,13 @@
         android:paddingLeft="16dp"
         android:paddingRight="16dp">
 
-        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:id="@+id/list_item_date_textview"
             android:text="Tomorrow"/>
 
-        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:id="@+id/list_item_forecast_textview"
@@ -45,13 +45,13 @@
         android:padding="16dp"
         android:layout_weight="0">
 
-        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:id="@+id/list_item_high_textview"
             android:text="20"/>
 
-        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:id="@+id/list_item_low_textview"
