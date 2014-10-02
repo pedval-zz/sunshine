@@ -19,6 +19,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.pedrovalencia.sunshine.app.data.WeatherContract;
@@ -46,6 +47,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
             // using the location set by the user, which is only in the Location table.
             // So the convenience is worth it.
             WeatherContract.WeatherEntry.TABLE_NAME + "." + WeatherContract.WeatherEntry._ID,
+            WeatherContract.WeatherEntry.COLUMN_WEATHER_ID,
             WeatherContract.WeatherEntry.COLUMN_DATETEXT,
             WeatherContract.WeatherEntry.COLUMN_SHORT_DESC,
             WeatherContract.WeatherEntry.COLUMN_MAX_TEMP,
@@ -170,6 +172,7 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         ((TextView) getView().findViewById(R.id.detail_wind)).setText(wind);
         ((TextView) getView().findViewById(R.id.detail_pressure)).setText(pressure);
         ((TextView) getView().findViewById(R.id.detail_forecast)).setText(weatherDescription);
+        ((ImageView)getView().findViewById(R.id.detail_icon)).setImageResource(Utility.getImageDetail(weatherDescription));
 
         // We still need this for the share intent
         mForecastStr = String.format("%s - %s - %s/%s", dateString, weatherDescription, high, low);

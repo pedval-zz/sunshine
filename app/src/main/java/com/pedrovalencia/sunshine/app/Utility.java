@@ -200,4 +200,29 @@ public class Utility {
         return context.getString(R.string.format_pressure, pressureIn);
     }
 
+    public static int getImageDetail(String descriptionWeather) {
+        //TODO Use jdk 7 or greater for switch with strings
+        int icon;
+        if("Clear".toLowerCase().equals(descriptionWeather.toLowerCase())) {
+            icon = R.drawable.art_clear;
+        } else if("Clouds".toLowerCase().equals(descriptionWeather.toLowerCase())) {
+            icon = R.drawable.art_clouds;
+        } else if("Fog".toLowerCase().equals(descriptionWeather.toLowerCase())) {
+            icon = R.drawable.art_fog;
+        } else if("light clouds".toLowerCase().equals(descriptionWeather.toLowerCase())) {
+            icon = R.drawable.art_light_clouds;
+        } else if("light rain".toLowerCase().equals(descriptionWeather.toLowerCase())) {
+            icon = R.drawable.art_light_rain;
+        } else if("Rain".toLowerCase().equals(descriptionWeather.toLowerCase())) {
+            icon = R.drawable.art_rain;
+        } else if("Snow".toLowerCase().equals(descriptionWeather.toLowerCase())) {
+            icon = R.drawable.art_snow;
+        } else if("Storm".toLowerCase().equals(descriptionWeather.toLowerCase())) {
+            icon = R.drawable.art_storm;
+        } else {
+            icon = R.mipmap.ic_launcher;
+        }
+        return icon;
+    }
+
 }
