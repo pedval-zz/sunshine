@@ -61,8 +61,7 @@ public class ForecastAdapter extends CursorAdapter {
 
         // Read weather icon ID from cursor
         int weatherId = cursor.getInt(ForecastFragment.COL_WEATHER_ID);
-        // Use placeholder image for now
-        viewHolder.iconView.setImageResource(R.drawable.ic_launcher);
+
 
         // Read date from cursor
         String dateString = cursor.getString(ForecastFragment.COL_WEATHER_DATE);
@@ -73,6 +72,9 @@ public class ForecastAdapter extends CursorAdapter {
         String description = cursor.getString(ForecastFragment.COL_WEATHER_DESC);
         // Find TextView and set weather forecast on it
         viewHolder.descriptionView.setText(description);
+
+        // Use placeholder image for now
+        viewHolder.iconView.setImageResource(Utility.getImageList(description));
 
         // Read user preference for metric or imperial temperature units
         boolean isMetric = Utility.isMetric(context);

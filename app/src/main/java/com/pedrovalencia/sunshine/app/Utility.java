@@ -225,4 +225,29 @@ public class Utility {
         return icon;
     }
 
+    public static int getImageList(String descriptionWeather) {
+        //TODO Use jdk 7 or greater for switch with strings
+        int icon;
+        if("Clear".toLowerCase().equals(descriptionWeather.toLowerCase())) {
+            icon = R.drawable.ic_clear;
+        } else if("Clouds".toLowerCase().equals(descriptionWeather.toLowerCase())) {
+            icon = R.drawable.ic_cloudy;
+        } else if("Fog".toLowerCase().equals(descriptionWeather.toLowerCase())) {
+            icon = R.drawable.ic_fog;
+        } else if("light clouds".toLowerCase().equals(descriptionWeather.toLowerCase())) {
+            icon = R.drawable.ic_light_clouds;
+        } else if("light rain".toLowerCase().equals(descriptionWeather.toLowerCase())) {
+            icon = R.drawable.ic_light_rain;
+        } else if("Rain".toLowerCase().equals(descriptionWeather.toLowerCase())) {
+            icon = R.drawable.ic_rain;
+        } else if("Snow".toLowerCase().equals(descriptionWeather.toLowerCase())) {
+            icon = R.drawable.ic_snow;
+        } else if("Storm".toLowerCase().equals(descriptionWeather.toLowerCase())) {
+            icon = R.drawable.ic_storm;
+        } else {
+            icon = R.mipmap.ic_launcher;
+        }
+        return icon;
+    }
+
 }
