@@ -73,8 +73,18 @@ public class ForecastAdapter extends CursorAdapter {
         // Find TextView and set weather forecast on it
         viewHolder.descriptionView.setText(description);
 
+        int viewType = getItemViewType(cursor.getPosition());
         // Use placeholder image for now
-        viewHolder.iconView.setImageResource(Utility.getImageList(description));
+        switch(viewType) {
+            case VIEW_TYPE_TODAY: {
+                viewHolder.iconView.setImageResource(Utility.getImageDetail(description));
+                break;
+            }
+            case VIEW_TYPE_FUTURE_DAY: {
+                viewHolder.iconView.setImageResource(Utility.getImageList(description));
+                break;
+            }
+        }
 
         // Read user preference for metric or imperial temperature units
         boolean isMetric = Utility.isMetric(context);
