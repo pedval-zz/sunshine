@@ -30,6 +30,7 @@ import com.pedrovalencia.sunshine.app.data.WeatherContract;
 public class DetailFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
 
     public static final String DATE_KEY = "forecast_date";
+    public static final String LOCATION_KEY = "forecast_location";
     public static final String LOG_TAG = DetailFragment.class.getSimpleName();
     public static final String FORECAST_SHARE_HASHTAG = "#SunshineApp";
     private String mForecastStr;
@@ -109,7 +110,33 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        getLoaderManager().initLoader(DETAIL_LOADER, null, this);
+
+        if(savedInstanceState != null) {
+            mForecastStr = savedInstanceState.getString(LOCATION_KEY);
+        }
+        Intent intent = getActivity().getIntent();
+        if(intent != null && intent.hasExtra(DetailActivity.DATE_KEY)) {
+            getLoaderManager().initLoader(DETAIL_LOADER, null, this);
+        }
+
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putString(LOCATION_KEY, mForecastStr);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Intent intent = getActivity().getIntent();
+        if(intent != null && intent.hasExtra(DetailActivity.DATE_KEY)
+                && mForecastStr != null &&
+                !mForecastStr.equals(Utility.getPreferredLocation(getActivity()))) {
+            getLoaderManager().restartLoader(DETAIL_LOADER, null, this);
+        }
+
     }
 
     @Override
