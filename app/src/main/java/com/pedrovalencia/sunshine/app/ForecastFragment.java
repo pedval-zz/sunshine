@@ -29,6 +29,7 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     private String mLocation;
     private int mPosition;
     private ListView mListView;
+    private boolean mUseTodayLayout;
     private static final int FORECAST_LOADER = 0;
     private static final String SELECTED_KEY = "selected_key";
 
@@ -87,6 +88,8 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
         // The ArrayAdapter will take data from a source and
         // use it to populate the ListView it's attached to.
         mForecastAdapter = new ForecastAdapter(getActivity(), null, 0);
+        mForecastAdapter.setUseTodayLayout(mUseTodayLayout);
+
 
         View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
@@ -192,5 +195,13 @@ public class ForecastFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public void onLoaderReset(Loader<Cursor> cursorLoader) {
         mForecastAdapter.swapCursor(null);
+    }
+
+    public void setUseTodayLayout(boolean useTodayLayout) {
+        mUseTodayLayout = useTodayLayout;
+        if(mForecastAdapter != null) {
+            mForecastAdapter.setUseTodayLayout(useTodayLayout);
+        }
+
     }
 }
