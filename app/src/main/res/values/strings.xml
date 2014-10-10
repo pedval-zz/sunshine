@@ -48,4 +48,13 @@
     <!-- Humidity format in % [CHAR LIMIT=NONE] -->
     <string name="format_humidity">Humidity: <xliff:g id="humidity">%1.0f</xliff:g> %%</string>
 
+    <string name="format_list_item_content_description">
+        <xliff:g id="date">%s</xliff:g>:
+        <xliff:g id="weather">%s</xliff:g>,
+        lowest temperature <xliff:g id="min">%s</xliff:g>,
+        highest temperature <xliff:g id="max">%s</xliff:g>
+    </string>
+
+    <string name="my_view_description">Showing a smiley depends on the selected weather</string>
+
 </resources>

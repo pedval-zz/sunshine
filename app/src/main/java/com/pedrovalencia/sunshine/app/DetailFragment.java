@@ -198,6 +198,8 @@ public class DetailFragment extends Fragment implements LoaderManager.LoaderCall
         ((TextView) getView().findViewById(R.id.detail_forecast)).setText(weatherDescription);
         ((ImageView)getView().findViewById(R.id.detail_icon)).setImageResource(Utility.getImageDetail(weatherDescription));
 
+        ((com.pedrovalencia.sunshine.app.MyView)getView().findViewById(R.id.detail_my_view)).setWeatherIcon(Utility.getImageDetail(weatherDescription));
+
         // We still need this for the share intent
         mForecastStr = String.format("%s - %s - %s/%s", dateString, weatherDescription, high, low);
 

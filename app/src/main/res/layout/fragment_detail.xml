@@ -76,6 +76,12 @@
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:textAppearanceLarge"
                     android:textColor="@color/grey_700" />
+
+                <com.pedrovalencia.sunshine.app.MyView
+                    android:id="@+id/detail_my_view"
+                    android:layout_width="64dp"
+                    android:layout_height="64dp"
+                    android:contentDescription="@string/my_view_description"/>
             </LinearLayout>
         </LinearLayout>
 

@@ -103,6 +103,14 @@ public class ForecastAdapter extends CursorAdapter {
         float low = cursor.getFloat(ForecastFragment.COL_WEATHER_MIN_TEMP);
         viewHolder.lowTempView.setText(Utility.formatTemperature(context, low, isMetric));
 
+        String contentDescription = context.getString(R.string.format_list_item_content_description,
+                Utility.getFriendlyDayString(context, dateString),
+                description,
+                Utility.formatTemperature(context, low, isMetric),
+                Utility.formatTemperature(context, high, isMetric));
+
+        view.setContentDescription(contentDescription);
+
     }
 
     public static class ViewHolder{
