@@ -56,5 +56,9 @@
     </string>
 
     <string name="my_view_description">Showing a smiley depends on the selected weather</string>
+    <!-- Account type (for sync-adapter authenticator) -->
+    <!-- SyncAdapter related -->
+    <string name="sync_account_type">sunshine.example.com</string>
+    <string name="content_authority">com.pedrovalencia.sunshine.app</string>
 
 </resources>
