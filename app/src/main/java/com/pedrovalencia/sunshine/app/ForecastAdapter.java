@@ -128,4 +128,6 @@ public class ForecastAdapter extends CursorAdapter {
             lowTempView = (TextView) view.findViewById(R.id.list_item_low_textview);
         }
     }
+
+
 }

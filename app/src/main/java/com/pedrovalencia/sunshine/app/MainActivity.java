@@ -62,40 +62,9 @@ public class MainActivity extends ActionBarActivity implements ForecastFragment.
         return true;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            Intent intent = new Intent(this, SettingsActivity.class);
-            startActivity(intent);
-        }
-        if(id == R.id.action_map) {
-            openPreferredLocationInMap();
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
-    private void openPreferredLocationInMap() {
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(this);
-        String location = pref.getString(getString(R.string.pref_location_key),
-                getString(R.string.pref_location_default));
 
-        Uri geolocation = Uri.parse("geo:0,0?").buildUpon()
-                .appendQueryParameter("q", location)
-                .build();
 
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(geolocation);
-
-        if(intent.resolveActivity(getPackageManager()) != null) {
-            startActivity(intent);
-        } else {
-            Log.d(LOG_TAG, "Couldn't call " + location);
-        }
-    }
 
     @Override
     public void onItemSelected(String date) {
